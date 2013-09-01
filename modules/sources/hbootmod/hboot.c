@@ -277,8 +277,8 @@ int hboot_boot(int handle)
 	if (emu_uart)
 	{
 		activate_emu_uart();
-		reconfigure_emu_uart(emu_uart);
 	}
+	reconfigure_emu_uart(emu_uart);
 
 	/* Disable dss, some defy want it. */
 	if (kill_dss)
