@@ -173,6 +173,7 @@ on boot
     # Charge only mode services.
     exec /system/bin/mot_boot_mode
     class_start charger
+	
 
 on charger
 on property:sys.chargeonly.mode=1
@@ -314,10 +315,3 @@ service locDrv /system/bin/brcm_guci_drv -config /system/etc/gpsconfig.xml
     class main
     user radio
     group radio inet sdcard_rw
-
-service fmradio /system/bin/fmradioserver
-    class main
-    disabled
-    user system
-    group bluetooth net_bt_admin net_raw net_admin misc
-
