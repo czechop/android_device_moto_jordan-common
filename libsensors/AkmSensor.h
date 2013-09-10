@@ -1,6 +1,5 @@
 /*
  * Copyright (C) 2008 The Android Open Source Project
- * Copyright (C) 2011 Sorin P. <sorin@hypermagik.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
-#ifndef ANDROID_ISL29030_SENSOR_H
-#define ANDROID_ISL29030_SENSOR_H
+
+#ifndef ANDROID_AKM_SENSOR_H
+#define ANDROID_AKM_SENSOR_H
 
 #include <stdint.h>
 #include <errno.h>
@@ -32,31 +31,31 @@
 
 struct input_event;
 
-/*****************************************************************************/
-
-class SensorISL29030 : public SensorBase
-{
+class AkmSensor : public SensorBase {
 public:
-    SensorISL29030();
-    virtual ~SensorISL29030();
+            AkmSensor();
+    virtual ~AkmSensor();
 
     enum {
-        Proximity = 0,
-        Light     = 1,
+        MagneticField   = 0,
+        Orientation     = 1,
         numSensors
     };
 
+    virtual int setDelay(int32_t handle, int64_t ns);
     virtual int enable(int32_t handle, int enabled);
     virtual int readEvents(sensors_event_t* data, int count);
     void processEvent(int code, int value);
 
-protected:
+private:
+    int update_delay();
     uint32_t mEnabled;
     uint32_t mPendingMask;
     InputEventCircularReader mInputReader;
     sensors_event_t mPendingEvents[numSensors];
-
-    int isEnabled(int what, bool& enabled);
+    uint64_t mDelays[numSensors];
 };
 
-#endif  // ANDROID_ISL29030_SENSOR_H
+/*****************************************************************************/
+
+#endif  // ANDROID_AKM_SENSOR_H
