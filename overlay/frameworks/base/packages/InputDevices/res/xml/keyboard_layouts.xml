@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<keyboard-layouts xmlns:android="http://schemas.android.com/apk/res/android">
+    <keyboard-layout android:name="keyboard_layout_azerty"
+            android:label="@string/keyboard_layout_azerty_label"
+            android:keyboardLayout="@raw/keyboard_layout_azerty" />
+
+    <keyboard-layout android:name="keyboard_layout_qwerty_uk"
+            android:label="@string/keyboard_layout_qwerty_uk_label"
+            android:keyboardLayout="@raw/keyboard_layout_qwerty_uk" />
+            
+    <keyboard-layout android:name="keyboard_layout_qwerty_us"
+            android:label="@string/keyboard_layout_qwerty_us_label"
+            android:keyboardLayout="@raw/keyboard_layout_qwerty_us" />
+
+    <keyboard-layout android:name="keyboard_layout_qwerty_pl"
+            android:label="@string/keyboard_layout_qwerty_pl_label"
+            android:keyboardLayout="@raw/keyboard_layout_qwerty_pl" />
+
+    <keyboard-layout android:name="keyboard_layout_qwertz"
+            android:label="@string/keyboard_layout_qwertz_label"
+            android:keyboardLayout="@raw/keyboard_layout_qwertz" />
+            
+    <keyboard-layout android:name="keyboard_layout_hebrew"
+            android:label="@string/keyboard_layout_hebrew_label"
+            android:keyboardLayout="@raw/keyboard_layout_heb" />
+</keyboard-layouts>
