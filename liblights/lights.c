@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011 The Android Open Source Project
+ * Copyright (C) 2008 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,8 +44,6 @@
 #define CHARGE_LED_RGB   1
 #define CHARGE_LED_WHITE 2
 
-//#define HAVE_KEYBOARD
-
 static pthread_once_t g_init = PTHREAD_ONCE_INIT;
 static pthread_mutex_t g_lock = PTHREAD_MUTEX_INITIALIZER;
 
@@ -54,10 +52,13 @@ static struct light_state_t g_notification;
 static int g_charge_led_active;
 static int g_last_button_brightness;
 
+
 char const*const LCD_FILE = "/sys/class/leds/lcd-backlight/brightness";
 char const*const ALS_FILE = "/sys/class/leds/lcd-backlight/als";
-char const*const BUTTON_ON_FILE = "/sys/class/leds/button-backlight/brightness";
+char const*const BUTTON_FILE = "/sys/class/leds/button-backlight/brightness";
+char const*const KEYBOARD_FILE = "/sys/class/leds/keyboard-backlight/brightness";
 char const*const BUTTON_BRIGHT_FILE = "/proc/backlight/brightness";
+
 
 /* RGB file descriptors */
 char const*const RED_LED_FILE = "/sys/class/leds/red/brightness";
@@ -75,6 +76,7 @@ void init_globals(void)
 
     g_charge_led_active = 0;
     g_last_button_brightness = -1;
+
 }
 
 static int
@@ -144,6 +146,20 @@ set_light_backlight(struct light_device_t* dev,
 }
 
 static int
+set_light_keyboard(struct light_device_t* dev,
+        struct light_state_t const* state)
+{
+    int err = 0;
+    int on = is_lit(state);
+
+    pthread_mutex_lock(&g_lock);
+    err = write_int(KEYBOARD_FILE, on ? 255:0);
+    pthread_mutex_unlock(&g_lock);
+
+    return err;
+}
+
+static int
 set_light_buttons(struct light_device_t* dev,
         struct light_state_t const* state)
 {
@@ -152,6 +168,7 @@ set_light_buttons(struct light_device_t* dev,
 
     if (brightness > 0) {
         char prop[PROPERTY_VALUE_MAX];
+
         if (property_get("persist.sys.button_brightness", prop, NULL)) {
             int button_brightness_scale = atoi(prop);
             if (button_brightness_scale == 0) {
@@ -168,12 +185,12 @@ set_light_buttons(struct light_device_t* dev,
         (g_last_button_brightness == 0 && brightness > 0) ||
         (g_last_button_brightness > 0 && brightness == 0))
     {
-        err = write_int(BUTTON_ON_FILE, brightness ? 1 : 0);
+        err = write_int(BUTTON_FILE, brightness ? 1 : 0);
     }
 
-//    if (err == 0 && brightness > 0 && brightness != g_last_button_brightness) {
+    if (err == 0 && brightness > 0 && brightness != g_last_button_brightness) {
         err = write_int(BUTTON_BRIGHT_FILE, brightness);
-//    }
+    }
 
     g_last_button_brightness = brightness;
 
@@ -258,6 +275,7 @@ set_light_battery(struct light_device_t* dev,
     return 0;
 }
 
+
 static int
 set_light_notification(struct light_device_t* dev,
         struct light_state_t const* state)
@@ -298,11 +316,9 @@ static int open_lights(const struct hw_module_t* module, char const* name,
     if (0 == strcmp(LIGHT_ID_BACKLIGHT, name)) {
         set_light = set_light_backlight;
     }
-#ifdef HAVE_KEYBOARD
     else if (0 == strcmp(LIGHT_ID_KEYBOARD, name)) {
-        set_light = set_light_buttons;
+        set_light = set_light_keyboard;
     }
-#endif
     else if (0 == strcmp(LIGHT_ID_BUTTONS, name)) {
         set_light = set_light_buttons;
     }
@@ -316,7 +332,6 @@ static int open_lights(const struct hw_module_t* module, char const* name,
         set_light = set_light_attention;
     }
     else {
-        ALOGW("%s: unknown led id %s", __FUNCTION__, name);
         return -EINVAL;
     }
 
@@ -345,7 +360,7 @@ struct hw_module_t HAL_MODULE_INFO_SYM = {
     .version_major = 1,
     .version_minor = 0,
     .id = LIGHTS_HARDWARE_MODULE_ID,
-    .name = "Jordan lights Module",
-    .author = "CyanogenDefy, AOSP, Google",
+    .name = "Milestone2 lights Module",
+    .author = "CyanogenMilestone2, AOSP, Google",
     .methods = &lights_module_methods,
 };
