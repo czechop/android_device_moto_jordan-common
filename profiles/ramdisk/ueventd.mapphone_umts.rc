@@ -80,6 +80,7 @@
 /dev/block/mmcblk1p7      0660   root       system
 
 # sensor interface
+/dev/sfh7743              0660   compass    compass
 /dev/lis331dlh            0660   compass    compass
 /dev/akm8973_dev          0660   compass    compass
 /dev/akm8973_aot          0660   compass    compass
