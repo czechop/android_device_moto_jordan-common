@@ -853,7 +853,7 @@ static int get_camera_info(int camera_id, struct camera_info *info)
     ALOGV("CameraHAL_GetCam_Info()");
 
     info->facing = CAMERA_FACING_BACK;
-    info->orientation = 90;
+    info->orientation = 270;
 
     ALOGD("%s: id:%i faceing:%i orientation: %i", __FUNCTION__,
           camera_id, info->facing, info->orientation);
