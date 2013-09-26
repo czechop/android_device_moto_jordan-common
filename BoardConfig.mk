@@ -88,7 +88,7 @@ BOARD_SDCARD_DEVICE_PRIMARY   := /dev/block/mmcblk0p1
 BOARD_SDCARD_DEVICE_SECONDARY := /dev/block/mmcblk0
 BOARD_SDEXT_DEVICE  := /dev/block/mmcblk0p2
 BOARD_SYSTEM_DEVICE := /dev/block/mmcblk1p21
-BOARD_DATA_DEVICE   := /dev/block/mmcblk1p25
+BOARD_DATA_DEVICE   := /dev/block/mmcblk1p26
 
 # Recovery
 BOARD_HAS_NO_SELECT_BUTTON := true

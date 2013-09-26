@@ -26,7 +26,7 @@ on fs
 
     symlink /dev/block/mmcblk1p21 /dev/block/system
     symlink /dev/block/mmcblk1p24 /dev/block/cache
-    symlink /dev/block/mmcblk1p25 /dev/block/userdata
+    symlink /dev/block/mmcblk1p26 /dev/block/userdata
 
 on post-fs
 

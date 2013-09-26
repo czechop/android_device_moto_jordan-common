@@ -22,7 +22,7 @@ on init
     chown root shell /tmp
     chmod 0775 /tmp
 
-    mount ext4 /dev/block/mmcblk1p25 /data wait noatime nodiratime nodev nobh data=writeback noauto_da_alloc barrier=0
+    mount ext4 /dev/block/mmcblk1p26 /data wait noatime nodiratime nodev nobh data=writeback noauto_da_alloc barrier=0
     mkdir /data/tmp/battd 0770 root system
     chown root system /data/tmp/battd
     chmod 0770 /data/tmp/battd

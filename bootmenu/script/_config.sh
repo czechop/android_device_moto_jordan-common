@@ -5,7 +5,7 @@ export PATH=/sbin:/system/xbin:/system/bin
 
 PART_SYSTEM=/dev/block/mmcblk1p21
 PART_CACHE=/dev/block/mmcblk1p24
-PART_DATA=/dev/block/mmcblk1p25
+PART_DATA=/dev/block/mmcblk1p26
 PART_PDS=/dev/block/mmcblk1p7
 
 FS_SYSTEM=ext3
