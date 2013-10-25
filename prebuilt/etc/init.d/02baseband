@@ -4,6 +4,9 @@ BASEBAND_SWITCH_PROP="persist.sys.new_baseband"
 BASEBAND_SWITCH_PROP_FILE="/data/property/$BASEBAND_SWITCH_PROP"
 BASEBAND_FILES_BASE="/system/etc/motorola/basebands"
 BASEBAND_DEFAULT="/system/etc/motorola/bp_nvm_default"
+BASEBAND_DATA_DIR="/data/bp_nvm"
+PDS_BACKUP_FILE="/data/pdsdata.img"
+
 
 if [ -e $BASEBAND_SWITCH_PROP_FILE ]; then
     NEW_BASEBAND=`cat $BASEBAND_SWITCH_PROP_FILE`
@@ -17,6 +20,9 @@ if [ -e $BASEBAND_SWITCH_PROP_FILE ]; then
         busybox rm -f $BASEBAND_DEFAULT/*
         busybox unzip -q $NEW_BASEBAND_ZIP -d $BASEBAND_DEFAULT
         busybox mount -o remount,ro /system
+        busybox rm -f $BASEBAND_DATA_DIR/*
+        busybox rm -f $PDS_BACKUP_FILE
+        busybox reboot
     fi
 fi
 
