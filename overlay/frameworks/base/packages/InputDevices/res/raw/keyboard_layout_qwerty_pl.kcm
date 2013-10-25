@@ -25,7 +25,8 @@ key A               {
 	base: 'a'       
 	shift, capslock: 'A'       
 	alt, numlock: '!'       
-	shift+alt: '\u0105'
+	ralt: '\u0105'
+	shift+ralt, capslock+ralt: '\u0104'
 	ctrl, meta: none
 }
 key B               { 
@@ -43,7 +44,8 @@ key C               {
 	base: 'c'       
 	shift, capslock: 'C'       
 	alt, numlock: '_'       
-	shift+alt: '\u0107'
+	ralt: '\u0107'
+	shift+ralt, capslock+ralt: '\u0106'
 	ctrl, meta: none
 }
 key D               { 
@@ -61,7 +63,8 @@ key E               {
 	base: 'e'       
 	shift, capslock: 'E'       
 	alt, numlock: '3'       
-	shift+alt: '\u0119' 
+	ralt: '\u0119' 
+	shift+ralt, capslock+ralt: '\u0118'
 	ctrl, meta: none
 }
 key F               { 
@@ -124,7 +127,8 @@ key L               {
 	base: 'l'       
 	shift, capslock: 'L'       
 	alt, numlock: ')'       
-	shift+alt: '\u0142'     
+	ralt: '\u0142'     
+	shift+ralt, capslock+ralt: '\u0141'
 	ctrl, meta: none
 }
 key M               { 
@@ -142,7 +146,8 @@ key N               {
 	base: 'n'       
 	shift, capslock: 'N'       
 	alt, numlock: '"'       
-	shift+alt: '\u0144'    
+	ralt: '\u0144'    
+	shift+ralt, capslock+ralt: '\u0143'
 	ctrl, meta: none
 }
 key O               { 
@@ -151,7 +156,8 @@ key O               {
 	base: 'o'       
 	shift, capslock: 'O'       
 	alt, numlock: '9'       
-	shift+alt: '\u00f3'    
+	ralt: '\u00f3'    
+	shift+ralt, capslock+ralt: '\u00d3'
 	ctrl, meta: none
 }
 key P               { 
@@ -187,7 +193,8 @@ key S               {
 	base: 's'       
 	shift, capslock: 'S'       
 	alt, numlock: '#'       
-	shift+alt: '\u015b'      
+	ralt: '\u015b'      
+	shift+ralt, capslock+ralt: '\u015a'
 	ctrl, meta: none
 }
 key T               { 
@@ -232,7 +239,8 @@ key X               {
 	base: 'x'       
 	shift, capslock: 'X'       
 	alt, numlock: '>'       
-	shift+alt: '\u017a'    
+	ralt: '\u017a'    
+	shift+ralt, capslock+ralt: '\u0179'
 	ctrl, meta: none
 }
 key Y               { 
@@ -250,7 +258,8 @@ key Z               {
 	base: 'z'       
 	shift, capslock: 'Z'       
 	alt, numlock: '<'       
-	shift+alt: '\u017c'     
+	ralt: '\u017c'     
+	shift+ralt, capslock+ralt: '\u017b'
 	ctrl, meta: none
 }
 key COMMA           { 
@@ -268,7 +277,7 @@ key PERIOD          {
 	base: '.'       
 	shift, capslock: '.'       
 	alt, numlock: ':'       
-	shift+alt: '|'       
+	shift+alt: ':'       
 	ctrl, meta: none
 }
 key POUND          { 
@@ -321,6 +330,7 @@ key SLASH           {
 	shift, capslock: '/'       
 	alt, numlock: '?'       
 	shift+alt: '/'       
+	ralt: '|'
 	ctrl, meta: none
 }
 
