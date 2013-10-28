@@ -32,5 +32,5 @@ keyboard.builtIn = 1
 # DPad always means 'up' from the perspective of the user, even when the entire
 # device has been rotated.
 keyboard.layout = sholes-keypad
-keyboard.characterMap = sholes-qwerty 
+keyboard.characterMap = sholes-keypad
 keyboard.orientationAware = 1

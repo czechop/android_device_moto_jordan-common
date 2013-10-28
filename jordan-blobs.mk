@@ -29,7 +29,7 @@ PRODUCT_COPY_FILES += \
 	$(device_path)/prebuilt/usr/keypad.kl:system/usr/keylayout/sholes-keypad.kl \
 	$(device_path)/prebuilt/usr/keypad.kl:system/usr/keylayout/umts_jordan-keypad.kl \
 	$(device_path)/prebuilt/usr/cpcap-key.kl:system/usr/keylayout/cpcap-key.kl \
-	$(device_path)/prebuilt/usr/keychars/sholes-qwerty.kcm:system/usr/keychars/sholes-qwerty.kcm \
+	$(device_path)/prebuilt/usr/keychars/sholes-qwerty.kcm:system/usr/keychars/sholes-keypad.kcm \
 	$(device_path)/prebuilt/usr/keychars/cpcap-key.kcm:system/usr/keychars/cpcap-key.kcm \
 
 # scripts
