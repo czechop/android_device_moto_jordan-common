@@ -24,9 +24,9 @@ on fs
     mkdir /pds 0775 system system
     exec /system/bootmenu/script/pdsbackup.sh
 
-    symlink /dev/block/mmcblk0p21 /dev/block/system
-    symlink /dev/block/mmcblk0p24 /dev/block/cache
-    symlink /dev/block/mmcblk0p25 /dev/block/userdata
+    symlink /dev/block/mmcblk1p21 /dev/block/system
+    symlink /dev/block/mmcblk1p24 /dev/block/cache
+    symlink /dev/block/mmcblk1p25 /dev/block/userdata
 
 on post-fs
 
@@ -99,7 +99,7 @@ on post-fs-data
 # Create basic filesystem structure
     mkdir /data/bp_nvm
     mkdir /data/gki 0770 radio radio
-    mkdir /data/location 0771 radio radio
+    mkdir /data/location 0771 radio system 
     mkdir /data/opprof 0770 radio shell
     mkdir /data/tpapi 0770 system system
     mkdir /data/tpapi/etc 0770 system system
