@@ -7,7 +7,6 @@ on early-init
 on init 
 
     # change order or library location search
-    export LD_LIBRARY_PATH /system/lib
     export DSP_PATH /system/lib/dsp
     export EXTERNAL_STORAGE /storage/sdcard0
 
@@ -319,3 +318,8 @@ service locDrv /system/bin/brcm_guci_drv -config /system/etc/gpsconfig.xml
     class main
     user radio
     group radio inet sdcard_rw
+
+# FUSE sdcard daemon for rich permissions (runs as media_rw)
+#service fuse_sdcard0 /system/bin/sdcard -u 1023 -g 1023 -d /mnt/media_rw/sdcard0 /storage/sdcard0
+#    class late_start
+#    disabled
