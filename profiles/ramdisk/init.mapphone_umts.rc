@@ -1,17 +1,18 @@
-on early-init
+on init 
 
-    mkdir /storage 0751 root sdcard_r
+    export DSP_PATH /system/lib/dsp
+
     # Create mountpoint so Dalvik can mark as slave in zygotes.
     mount tmpfs tmpfs /storage mode=0050,uid=0,gid=1028
 
-on init 
+    #External storage directories
+    mkdir /mnt/media_rw/sdcard0 0700 media_rw media_rw
 
-    # change order or library location search
-    export DSP_PATH /system/lib/dsp
+    mkdir /storage/sdcard0 0700 root root
+
     export EXTERNAL_STORAGE /storage/sdcard0
-    export ANDROID_CACHE /cache
 
-    mkdir /storage/sdcard0 0000 system system
+    # for backwards compatibility
     symlink /storage/sdcard0 /sdcard
     symlink /storage/sdcard0 /mnt/sdcard
 
@@ -348,9 +349,9 @@ service locDrv /system/bin/brcm_guci_drv -config /system/etc/gpsconfig.xml
     group radio inet sdcard_rw
 
 # FUSE sdcard daemon for rich permissions (runs as media_rw)
-#service fuse_sdcard0 /system/bin/sdcard -u 1023 -g 1023 -d /mnt/media_rw/sdcard0 /storage/sdcard0
-#    class late_start
-#    disabled
+service fuse_sdcard0 /system/bin/sdcard -u 1023 -g 1023 -d /mnt/media_rw/sdcard0 /storage/sdcard0
+    class late_start
+    disabled
 
 # sysinit (/system/etc/init.d)
 service sysinit /system/bin/sysinit
