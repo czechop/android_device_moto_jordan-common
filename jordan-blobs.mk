@@ -48,6 +48,7 @@ PRODUCT_COPY_FILES += \
 	$(device_path)/prebuilt/etc/location.cfg:system/etc/location.cfg \
 	$(device_path)/prebuilt/etc/media_codecs.xml:system/etc/media_codecs.xml \
 	$(device_path)/prebuilt/etc/audio_policy.conf:system/etc/audio_policy.conf \
+	$(device_path)/tinyhw/tiny_hw.xml:system/etc/tiny_hw.xml \
 
 # WLAN/WPAN firmware
 PRODUCT_COPY_FILES += \
@@ -55,7 +56,8 @@ PRODUCT_COPY_FILES += \
     $(device_path)/prebuilt/etc/firmware/ti-connectivity/wl127x-fw-4-plt.bin:system/etc/firmware/ti-connectivity/wl127x-fw-4-plt.bin \
     $(device_path)/prebuilt/etc/firmware/ti-connectivity/wl127x-fw-4-sr.bin:system/etc/firmware/ti-connectivity/wl127x-fw-4-sr.bin \
     $(device_path)/prebuilt/etc/firmware/TIInit_7.2.31.bts:system/etc/firmware/TIInit_7.2.31.bts \
-
+    $(device_path)/prebuilt/etc/wifi/wpa_supplicant_overlay.conf:system/etc/wifi/wpa_supplicant_overlay.conf \
+    $(device_path)/prebuilt/etc/wifi/p2p_supplicant_overlay.conf:system/etc/wifi/p2p_supplicant_overlay.conf \
 
 # New CM9 backup list system (addon.d)
 PRODUCT_COPY_FILES += \

@@ -40,10 +40,13 @@ TARGET_ARCH_VARIANT_CPU := cortex-a8
 TARGET_CPU_VARIANT := cortex-a8
 TARGET_ARCH_VARIANT_FPU := neon
 TARGET_OMAP3 := true
+OMAP_ENHANCEMENT := true
 ARCH_ARM_HAVE_TLS_REGISTER := true
-COMMON_GLOBAL_CFLAGS += -DTARGET_OMAP3 -DOMAP_COMPAT -DBINDER_COMPAT -DUSES_AUDIO_LEGACY
+COMMON_GLOBAL_CFLAGS += -DOMAP_ENHANCEMENT -DTARGET_OMAP3 -DOMAP_ENHANCEMENT_VTC
 TARGET_GLOBAL_CFLAGS += -mtune=cortex-a8 -mfpu=neon -mfloat-abi=softfp
 TARGET_GLOBAL_CPPFLAGS += -mtune=cortex-a8 -mfpu=neon -mfloat-abi=softfp
+
+TARGET_SPECIFIC_HEADER_PATH := device/moto/jordan-common/include
 
 # Conserve memory in the Dalvik heap
 # Details: https://github.com/CyanogenMod/android_dalvik/commit/15726c81059b74bf2352db29a3decfc4ea9c1428
@@ -51,7 +54,8 @@ TARGET_ARCH_LOWMEM := true
 
 # Wifi related defines
 USES_TI_MAC80211 := true
-WPA_SUPPLICANT_VERSION           := VER_0_8_X_TI
+COMMON_GLOBAL_CFLAGS += -DUSES_TI_MAC80211
+WPA_SUPPLICANT_VERSION           := VER_0_8_X
 BOARD_WPA_SUPPLICANT_DRIVER      := NL80211
 BOARD_WPA_SUPPLICANT_PRIVATE_LIB := lib_driver_cmd_wl12xx
 BOARD_HOSTAPD_DRIVER             := NL80211
@@ -61,24 +65,26 @@ BOARD_WLAN_DEVICE                := wl12xx_mac80211
 BOARD_SOFTAP_DEVICE              := wl12xx_mac80211
 WIFI_DRIVER_MODULE_PATH          := "/system/lib/modules/wl12xx_sdio.ko"
 WIFI_DRIVER_MODULE_NAME          := "wl12xx_sdio"
-WIFI_FIRMWARE_LOADER             := ""
-COMMON_GLOBAL_CFLAGS += -DUSES_TI_MAC80211
-BOARD_HOSTAPD_TIAP_ROOT     := system/wlan/ti/WiLink_AP
 
 # Bluetooth
 BOARD_HAVE_BLUETOOTH := true
-TARGET_CUSTOM_BLUEDROID := ../../../device/moto/jordan-common/bluedroid.c
 BOARD_BLUETOOTH_BDROID_BUILDCFG_INCLUDE_DIR := device/moto/jordan-common/bluetooth
 BOARD_WPAN_DEVICE := true
 # Usb Specific
 BOARD_VOLD_EMMC_SHARES_DEV_MAJOR := true
 
 # OMX Stuff
+# BOARD_USES_TI_CAMERA_HAL := true
 HARDWARE_OMX := true
-TARGET_USE_OMX_RECOVERY := true
-TARGET_USE_OMAP_COMPAT  := true
-BUILD_WITH_TI_AUDIO := 1
-BUILD_PV_VIDEO_ENCODERS := 1
+OMX_JPEG := true
+OMX_VENDOR := ti
+OMX_VENDOR_INCLUDES := \
+   hardware/ti/omx/system/src/openmax_il/omx_core/inc \
+   hardware/ti/omx/image/src/openmax_il/jpeg_enc/inc
+OMX_VENDOR_WRAPPER := TI_OMX_Wrapper
+BOARD_OPENCORE_LIBRARIES := libOMX_Core
+BOARD_OPENCORE_FLAGS := -DHARDWARE_OMX=1
+#BOARD_CAMERA_LIBRARIES := libcamera
 
 # Bootmenu
 BOARD_USES_BOOTMENU := true
@@ -118,7 +124,6 @@ BOARD_UMS_LUNFILE := /sys/class/android_usb/f_mass_storage/lun/file
 # Egl Specific
 USE_OPENGL_RENDERER := true
 BOARD_EGL_CFG := device/moto/jordan-common/egl.cfg
-BOARD_USE_YUV422I_DEFAULT_COLORFORMAT := true
 ENABLE_WEBGL := true
 COMMON_GLOBAL_CFLAGS += -DSYSTEMUI_PBSIZE_HACK=1
 COMMON_GLOBAL_CFLAGS += -DWORKAROUND_BUG_10194508=1
@@ -130,13 +135,17 @@ TARGET_RUNNING_WITHOUT_SYNC_FRAMEWORK := true
 USE_CAMERA_STUB := false
 BOARD_OVERLAY_BASED_CAMERA_HAL := true
 
-# Other..
-BOARD_USES_AUDIO_LEGACY := true
-TARGET_PROVIDES_LIBAUDIO := true
-BOARD_USE_KINETO_COMPATIBILITY := true
-TARGET_BOOTANIMATION_USE_RGB565 := true
+# Audio
+BOARD_USES_GENERIC_AUDIO := false
+BOARD_USES_ALSA_AUDIO := true
+BUILD_WITH_ALSA_UTILS := true
+HAVE_2_3_DSP := 1
 BOARD_USE_HARDCODED_FAST_TRACK_LATENCY_WHEN_DENIED := 160
-BOARD_USES_LEGACY_RIL :=true
+# Other..
+TARGET_BOOTANIMATION_USE_RGB565 := true
+BOARD_USES_LEGACY_RIL := true
+BOARD_NEEDS_CUTILS_LOG := true
+TARGET_USE_CUSTOM_SECOND_LUN_NUM := 1
 BOARD_USE_LEGACY_SENSORS_FUSION := false
 BOARD_HARDWARE_CLASS := device/moto/jordan-common/cmhw/
 
@@ -155,7 +164,6 @@ ext_modules:
 		$(KERNEL_MODULES_OUT) \; || true
 
 
-
 WLAN_MODULES:
 	make clean -C hardware/ti/wlan/mac80211/compat_wl12xx
 	make -C hardware/ti/wlan/mac80211/compat_wl12xx KERNEL_DIR=$(KERNEL_OUT) KLIB=$(KERNEL_OUT) KLIB_BUILD=$(KERNEL_OUT) ARCH=arm CROSS_COMPILE="arm-eabi-"
@@ -163,8 +171,10 @@ WLAN_MODULES:
 	mv hardware/ti/wlan/mac80211/compat_wl12xx/net/mac80211/mac80211.ko $(KERNEL_MODULES_OUT)
 	mv hardware/ti/wlan/mac80211/compat_wl12xx/net/wireless/cfg80211.ko $(KERNEL_MODULES_OUT)
 	mv hardware/ti/wlan/mac80211/compat_wl12xx/drivers/net/wireless/wl12xx/wl12xx.ko $(KERNEL_MODULES_OUT)
+	mv hardware/ti/wlan/mac80211/compat_wl12xx/drivers/net/wireless/wl12xx/wl12xx_spi.ko $(KERNEL_MODULES_OUT)
 	mv hardware/ti/wlan/mac80211/compat_wl12xx/drivers/net/wireless/wl12xx/wl12xx_sdio.ko $(KERNEL_MODULES_OUT)
 	arm-linux-androideabi-strip --strip-unneeded $(KERNEL_MODULES_OUT)/*
+
 hboot:
 	mkdir -p $(PRODUCT_OUT)/system/bootmenu/2nd-boot   
 	echo "$(BOARD_KERNEL_CMDLINE)" > $(PRODUCT_OUT)/system/bootmenu/2nd-boot/cmdline  
@@ -175,9 +185,8 @@ hboot:
 # If kernel sources are present in repo, here is the location
 TARGET_KERNEL_SOURCE := $(ANDROID_BUILD_TOP)/jordan-kernel
 TARGET_KERNEL_CUSTOM_TOOLCHAIN := arm-eabi-4.4.3
-BOARD_KERNEL_CMDLINE := console=/dev/null mem=500M init=/init omapfb.vram=0:4M
+BOARD_KERNEL_CMDLINE := console=/dev/null mem=500M omapfb.vram=0:4M
 #TARGET_PREBUILT_KERNEL := $(ANDROID_BUILD_TOP)/device/moto/jordan-common/kernel
 # Extra : external modules sources
 TARGET_KERNEL_MODULES_EXT := $(ANDROID_BUILD_TOP)/device/moto/jordan-common/modules/sources/
-TARGET_KERNEL_MODULES := ext_modules hboot WLAN_MODULES
-
+TARGET_KERNEL_MODULES := hboot WLAN_MODULES 

@@ -1,16 +1,18 @@
-on early-init
+on init 
 
-    mkdir /storage 0050 root sdcard_r
+    export DSP_PATH /system/lib/dsp
+
     # Create mountpoint so Dalvik can mark as slave in zygotes.
     mount tmpfs tmpfs /storage mode=0050,uid=0,gid=1028
 
-on init 
+    #External storage directories
+    mkdir /mnt/media_rw/sdcard0 0700 media_rw media_rw
 
-    # change order or library location search
-    export DSP_PATH /system/lib/dsp
+    mkdir /storage/sdcard0 0700 root root
+
     export EXTERNAL_STORAGE /storage/sdcard0
 
-    mkdir /storage/sdcard0 0000 system system
+    # for backwards compatibility
     symlink /storage/sdcard0 /sdcard
     symlink /storage/sdcard0 /mnt/sdcard
 
@@ -18,7 +20,7 @@ on fs
 
 # Mount mmc partitions
 
-    mount_all ./fstab.mapphone_umts
+    mount_all ./fstab.mapphone_
 
     mkdir /pds 0775 system system
     exec /system/bootmenu/script/pdsbackup.sh
@@ -38,6 +40,7 @@ on post-fs
 
 # Load wifi drivers (all except wl12xx_sdio)
     insmod /system/lib/modules/compat.ko
+    insmod /system/lib/modules/compat_firmware_class.ko
     insmod /system/lib/modules/cfg80211.ko
     insmod /system/lib/modules/mac80211.ko
     insmod /system/lib/modules/wl12xx.ko
@@ -46,11 +49,15 @@ on post-fs
     symlink /dev /dev/netmux
     symlink /dev/ttyGS0 /dev/acm0
     symlink /dev/hp3a-omap /dev/hp3A-omap
+    symlink /dev/ttyO0 /dev/ttyS0
+    symlink /dev/ttyO1 /dev/ttyS1
+    symlink /dev/ttyO2 /dev/ttyS2
+    symlink /dev/ttyO3 /dev/ttyS3
 
     mount rootfs rootfs / rw remount
 
 # Overclock after 2ndboot.
-    exec /system/bootmenu/script/overclock.sh
+    #exec /system/bootmenu/script/overclock.sh
 
 # Busybox
     mkdir /data/local/tmp 0777 system shell
@@ -66,31 +73,35 @@ on post-fs
 
 # Configure kernel options
     # Enable automatic power control for EHCI USB IPC
-    write /sys/devices/platform/ehci-omap.0/usb1/power/level auto
-    write /sys/devices/platform/ehci-omap.0/usb1/power/autosuspend 0
-    write /sys/devices/platform/ehci-omap.0/usb1/1-3/power/level auto
-    write /sys/devices/platform/ehci-omap.0/usb1/1-3/power/autosuspend 0
+    write /sys/devices/platform/omap/usbhs_omap/ehci-omap.0/usb1/power/level auto
+    write /sys/devices/platform/omap/usbhs_omap/ehci-omap.0/usb1/power/autosuspend 0
+    write /sys/devices/platform/omap/usbhs_omap/ehci-omap.0/usb1/1-3/power/level auto
+    write /sys/devices/platform/omap/usbhs_omap/ehci-omap.0/usb1/1-3/power/autosuspend 0
     # Disable a system-wide task dump on OOM in default
-    write /proc/sys/vm/oom_dump_tasks 0
+
     write /proc/sys/fs/suid_dumpable 2
     # Power Management
-    write /sys/power/sr_vdd1_autocomp 1
-    write /sys/power/sr_vdd2_autocomp 1
+
+
 # Change ownership for vibrators
     chown system system /sys/class/timed_output/vibrator/enable
-    chown system system /sys/class/timed_output/vibrator/sweep
+
     chmod 0660 /sys/class/timed_output/vibrator/enable
-    chmod 0660 /sys/class/timed_output/vibrator/sweep
+
 # bluetooth power up/down interface (wl127x Bluetooth and hci0)
     chown bluetooth net_bt_stack /sys/class/rfkill/rfkill0/type
     chown bluetooth net_bt_stack /sys/class/rfkill/rfkill0/state
     chmod 0660 /sys/class/rfkill/rfkill0/state
 
-# Tweaks
-    # DSS - disable tearing elimination
-    write /sys/devices/omapdss/display0/tear_elim 0  
-
 on post-fs-data
+
+    mkdir /cache/dalvik-cache 0771 system system
+    chown system system /cache/dalvik-cache
+    chmod 0771 /cache/dalvik-cache
+    mkdir /data/.ssh 0750 root shell
+
+    # Run sysinit
+    start sysinit
 
     mount rootfs rootfs / ro remount
 
@@ -105,7 +116,10 @@ on post-fs-data
     mkdir /data/tpapi/etc/tpa/persistent 0770 system system
     mkdir /data/tmp 0770 root system
     mkdir /data/tmp/battd 0770 root system
+    # Create the directories used by the Wireless subsystem
+    mkdir /data/misc/wifi 0770 wifi wifi
     mkdir /data/misc/wifi/sockets 0770 wifi wifi
+    mkdir /data/misc/wifi/wpa_supplicant 0770 wifi wifi
     mkdir /data/misc/dhcp 0770 dhcp dhcp
     mkdir /tmp/commdrv 0770 radio radio
     mkdir /data/local/hwui.deny
@@ -218,7 +232,7 @@ service gkisystem /system/bin/gkisystem
     socket gpshal_socket stream 660 radio system
     socket opprofdaemon stream 660 radio system
     group radio system
-    onrestart exec /system/bin/gki_pd_notifier
+    oneshot
 
 service battd /system/bin/battd
     class charger
@@ -232,20 +246,6 @@ service ssmgrd /system/bin/ssmgrd
     group radio input system
     oneshot
 
-# Phone modem error handling
-service panic_daemon /system/bin/panic_daemon
-    class main
-    user radio
-    group radio system graphics sdcard_rw
-    socket panic_daemon stream 660 radio radio
-    onrestart exec /system/bin/handle_bp_panic.sh
-
-service secclkd /system/bin/secclkd
-    class main
-    user system
-    group system radio
-    oneshot
-
 # Ecompass daemon
 service akmd2 /system/bin/akmd2
     class main
@@ -257,15 +257,31 @@ service wifi_calibrator /system/bin/sh /system/bin/wifical.sh
     class main
     group wifi
     oneshot
-service p2p_supplicant /system/bin/wpa_supplicant \
-    -iwlan0 -Dnl80211 -c/data/misc/wifi/wpa_supplicant.conf -N \
-    -ip2p0 -Dnl80211 -c/data/misc/wifi/p2p_supplicant.conf -puse_p2p_group_interface=1
+service wpa_supplicant /system/bin/wpa_supplicant \
+    -iwlan0 -Dnl80211 -c/data/misc/wifi/wpa_supplicant.conf \
+    -I/system/etc/wifi/wpa_supplicant_overlay.conf \
+    -O/data/misc/wifi/sockets \
+    -e/data/misc/wifi/entropy.bin -g@android:wpa_wlan0
+    #   we will start as root and wpa_supplicant will switch to user wifi
+    #   after setting up the capabilities required for WEXT
+    #   user wifi
+    #   group wifi inet keystore
     class main
     socket wpa_wlan0 dgram 660 wifi wifi
     disabled
     oneshot
-service wpa_supplicant /system/bin/wpa_supplicant \
-    -iwlan0 -Dnl80211 -c/data/misc/wifi/wpa_supplicant.conf -e/data/misc/wifi/entropy.bin
+
+service p2p_supplicant /system/bin/wpa_supplicant \
+    -iwlan0 -Dnl80211 -c/data/misc/wifi/wpa_supplicant.conf \
+    -I/system/etc/wifi/wpa_supplicant_overlay.conf -N \
+    -ip2p0 -Dnl80211 -c/data/misc/wifi/p2p_supplicant.conf \
+    -I/system/etc/wifi/p2p_supplicant_overlay.conf \
+    -O/data/misc/wifi/sockets -puse_p2p_group_interface=1 \
+    -e/data/misc/wifi/entropy.bin -g@android:wpa_wlan0
+#   we will start as root and wpa_supplicant will switch to user wifi
+#   after setting up the capabilities required for WEXT
+#   user wifi
+#   group wifi inet keystore
     class main
     socket wpa_wlan0 dgram 660 wifi wifi
     disabled
@@ -302,13 +318,13 @@ service hostapd_bin /system/bin/hostapd -d /data/misc/wifi/hostapd.conf
     disabled
     oneshot
 
-service pvrsrvctl /system/bin/pvrsrvctl --start --no-module
+service pvrsrvinit /system/bin/pvrsrvinit
     class core
     user root
     group root
     oneshot
 
-service baseimage /system/bin/dspexec -T /system/lib/dsp/baseimage.dof
+service baseimage /system/bin/cexec.out /system/lib/dsp/baseimage.dof
     class main
     user media
     group media graphics
@@ -320,6 +336,13 @@ service locDrv /system/bin/brcm_guci_drv -config /system/etc/gpsconfig.xml
     group radio inet sdcard_rw
 
 # FUSE sdcard daemon for rich permissions (runs as media_rw)
-#service fuse_sdcard0 /system/bin/sdcard -u 1023 -g 1023 -d /mnt/media_rw/sdcard0 /storage/sdcard0
-#    class late_start
-#    disabled
+service fuse_sdcard0 /system/bin/sdcard -u 1023 -g 1023 -d /mnt/media_rw/sdcard0 /storage/sdcard0
+    class late_start
+    disabled
+
+# sysinit (/system/etc/init.d)
+service sysinit /system/bin/sysinit
+    user root
+    oneshot
+    disabled
+
