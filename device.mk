@@ -55,6 +55,10 @@ PRODUCT_PROPERTY_OVERRIDES += \
 	ro.telephony.default_network=3 \
 	mobiledata.interfaces=rmnet0 \
 
+PRODUCT_PROPERTY_OVERRIDES += \
+	ro.config.low_ram=true  \
+	dalvik.vm.jit.codecachesize=0 \
+
 DEVICE_PACKAGE_OVERLAYS += device/moto/jordan-common/overlay
 
 # Permissions
@@ -111,7 +115,7 @@ PRODUCT_PACKAGES += charge_only_mode mot_boot_mode
 PRODUCT_PACKAGES += librs_jni
 
 # CM9 apps
-PRODUCT_PACKAGES += Torch HwaSettings make_ext4fs Launcher3 CMFileManager
+PRODUCT_PACKAGES += Torch HwaSettings make_ext4fs Launcher3 CMFileManager Mms Superuser su
 
 # Experimental TI OpenLink
 PRODUCT_PACKAGES += libnl_2 iw libbt-vendor uim-sysfs
