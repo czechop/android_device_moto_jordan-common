@@ -56,7 +56,7 @@ PRODUCT_PROPERTY_OVERRIDES += \
 	mobiledata.interfaces=rmnet0 \
 
 PRODUCT_PROPERTY_OVERRIDES += \
-	ro.config.low_ram=true  \
+	ro.config.low_ram=false  \
 	dalvik.vm.jit.codecachesize=0 \
 
 DEVICE_PACKAGE_OVERLAYS += device/moto/jordan-common/overlay
@@ -87,10 +87,10 @@ PRODUCT_PACKAGES += rild Dialer
 # Sound
 PRODUCT_PACKAGES += \
 	audio.a2dp.default  \
-	audio_policy.jordan \
+	audio_policy.default \
 	audio.primary.omap3
 
-PRODUCT_PACKAGES += power.omap3 hwcomposer.jordan
+PRODUCT_PACKAGES += hwcomposer.jordan
 
 # legacy version of skia
 # fixes the app switcher previews
