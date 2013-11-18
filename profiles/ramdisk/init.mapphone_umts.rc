@@ -20,7 +20,7 @@ on fs
 
 # Mount mmc partitions
 
-    mount_all ./fstab.mapphone_umts
+    mount_all ./fstab.mapphone_
 
     mkdir /pds 0775 system system
     exec /system/bootmenu/script/pdsbackup.sh
@@ -40,6 +40,7 @@ on post-fs
 
 # Load wifi drivers (all except wl12xx_sdio)
     insmod /system/lib/modules/compat.ko
+    insmod /system/lib/modules/compat_firmware_class.ko
     insmod /system/lib/modules/cfg80211.ko
     insmod /system/lib/modules/mac80211.ko
     insmod /system/lib/modules/wl12xx.ko
@@ -48,11 +49,15 @@ on post-fs
     symlink /dev /dev/netmux
     symlink /dev/ttyGS0 /dev/acm0
     symlink /dev/hp3a-omap /dev/hp3A-omap
+    symlink /dev/ttyO0 /dev/ttyS0
+    symlink /dev/ttyO1 /dev/ttyS1
+    symlink /dev/ttyO2 /dev/ttyS2
+    symlink /dev/ttyO3 /dev/ttyS3
 
     mount rootfs rootfs / rw remount
 
 # Overclock after 2ndboot.
-    exec /system/bootmenu/script/overclock.sh
+    #exec /system/bootmenu/script/overclock.sh
 
 # Busybox
     mkdir /data/local/tmp 0777 system shell
@@ -68,31 +73,35 @@ on post-fs
 
 # Configure kernel options
     # Enable automatic power control for EHCI USB IPC
-    write /sys/devices/platform/ehci-omap.0/usb1/power/level auto
-    write /sys/devices/platform/ehci-omap.0/usb1/power/autosuspend 0
-    write /sys/devices/platform/ehci-omap.0/usb1/1-3/power/level auto
-    write /sys/devices/platform/ehci-omap.0/usb1/1-3/power/autosuspend 0
+    write /sys/devices/platform/omap/usbhs_omap/ehci-omap.0/usb1/power/level auto
+    write /sys/devices/platform/omap/usbhs_omap/ehci-omap.0/usb1/power/autosuspend 0
+    write /sys/devices/platform/omap/usbhs_omap/ehci-omap.0/usb1/1-3/power/level auto
+    write /sys/devices/platform/omap/usbhs_omap/ehci-omap.0/usb1/1-3/power/autosuspend 0
     # Disable a system-wide task dump on OOM in default
-    write /proc/sys/vm/oom_dump_tasks 0
+
     write /proc/sys/fs/suid_dumpable 2
     # Power Management
-    write /sys/power/sr_vdd1_autocomp 1
-    write /sys/power/sr_vdd2_autocomp 1
+
+
 # Change ownership for vibrators
     chown system system /sys/class/timed_output/vibrator/enable
-    chown system system /sys/class/timed_output/vibrator/sweep
+
     chmod 0660 /sys/class/timed_output/vibrator/enable
-    chmod 0660 /sys/class/timed_output/vibrator/sweep
+
 # bluetooth power up/down interface (wl127x Bluetooth and hci0)
     chown bluetooth net_bt_stack /sys/class/rfkill/rfkill0/type
     chown bluetooth net_bt_stack /sys/class/rfkill/rfkill0/state
     chmod 0660 /sys/class/rfkill/rfkill0/state
 
-# Tweaks
-    # DSS - disable tearing elimination
-    write /sys/devices/omapdss/display0/tear_elim 0  
-
 on post-fs-data
+
+    mkdir /cache/dalvik-cache 0771 system system
+    chown system system /cache/dalvik-cache
+    chmod 0771 /cache/dalvik-cache
+    mkdir /data/.ssh 0750 root shell
+
+    # Run sysinit
+    start sysinit
 
     mount rootfs rootfs / ro remount
 
@@ -245,12 +254,6 @@ service panic_daemon /system/bin/panic_daemon
     socket panic_daemon stream 660 radio radio
     onrestart exec /system/bin/handle_bp_panic.sh
 
-service secclkd /system/bin/secclkd
-    class main
-    user system
-    group system radio
-    oneshot
-
 # Ecompass daemon
 service akmd2 /system/bin/akmd2
     class main
@@ -323,13 +326,13 @@ service hostapd_bin /system/bin/hostapd -d /data/misc/wifi/hostapd.conf
     disabled
     oneshot
 
-service pvrsrvctl /system/bin/pvrsrvctl --start --no-module
+service pvrsrvinit /system/bin/pvrsrvinit
     class core
     user root
     group root
     oneshot
 
-service baseimage /system/bin/dspexec -T /system/lib/dsp/baseimage.dof
+service baseimage /system/bin/cexec.out /system/lib/dsp/baseimage.dof
     class main
     user media
     group media graphics
@@ -343,4 +346,10 @@ service locDrv /system/bin/brcm_guci_drv -config /system/etc/gpsconfig.xml
 # FUSE sdcard daemon for rich permissions (runs as media_rw)
 service fuse_sdcard0 /system/bin/sdcard -u 1023 -g 1023 -d /mnt/media_rw/sdcard0 /storage/sdcard0
     class late_start
+    disabled
+
+# sysinit (/system/etc/init.d)
+service sysinit /system/bin/sysinit
+    user root
+    oneshot
     disabled
