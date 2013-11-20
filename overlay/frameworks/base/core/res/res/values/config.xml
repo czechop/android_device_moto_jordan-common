@@ -302,4 +302,7 @@ Some kernels use names like CAR and DESK.
         <item>com.google.android.location</item>
     </string-array>
 
+    <!-- Device supports LED flashlight -->
+    <bool name="config_enableTorch">true</bool>
+
 </resources>
