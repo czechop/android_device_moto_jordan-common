@@ -248,7 +248,6 @@
       </integer-array>
 
       <integer name="config_keyboardBrightnessSettingDefault">255</integer>
-
     <!-- Amount of time it takes for the light sensor to warm up in milliseconds.
          For this time after the screen turns on, the Power Manager
          will not debounce light sensor readings, 500ms is also the minimum interval -->
@@ -304,4 +303,7 @@ Some kernels use names like CAR and DESK.
 
     <!-- Disable lockscreen translucent decor by default -->
     <bool name="config_enableLockScreenTranslucentDecor">true</bool>
+
+    <!-- Device supports LED flashlight -->
+    <bool name="config_enableTorch">true</bool>
 </resources>
