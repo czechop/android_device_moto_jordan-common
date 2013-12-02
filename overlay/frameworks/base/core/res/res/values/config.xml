@@ -304,4 +304,7 @@ Some kernels use names like CAR and DESK.
 
     <!-- Disable lockscreen translucent decor by default -->
     <bool name="config_enableLockScreenTranslucentDecor">true</bool>
+
+    <!-- Device supports LED flashlight -->
+    <bool name="config_enableTorch">true</bool>
 </resources>
