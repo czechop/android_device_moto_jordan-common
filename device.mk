@@ -149,7 +149,9 @@ $(call inherit-product, build/target/product/full_base.mk)
 $(call inherit-product, frameworks/native/build/phone-hdpi-512-dalvik-heap.mk)
 
 # Should be after the full_base include, which loads languages_full
+PRODUCT_LOCALES := en_US pl_PL ru_RU zh_TW de_DE es_ES cs_CZ it_IT vi_VN pt_BR hu_HU fr_FR zh_CN nl_NL fa_IR
 PRODUCT_LOCALES += hdpi
+PRODUCT_AAPT_CONFIG := normal hdpi
 
 PRODUCT_NAME := full_jordan
 PRODUCT_DEVICE := MB52x
