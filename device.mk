@@ -18,8 +18,17 @@
 # This is the product configuration for a generic Motorola Defy (jordan)
 #
 
-# The gps config appropriate for this device
+# The gps/telephony config appropriate for this device
 $(call inherit-product, device/common/gps/gps_eu_supl.mk)
+$(call inherit-product, $(SRC_TARGET_DIR)/product/telephony.mk)	
+# Blobs and bootmenu stuff
+$(call inherit-product, device/moto/jordan-common/jordan-blobs.mk)
+$(call inherit-product, device/moto/jordan-common/bootmenu/bootmenu.mk)
+$(call inherit-product, frameworks/native/build/phone-hdpi-512-dalvik-heap.mk)
+# Get some sounds
+$(call inherit-product-if-exists, frameworks/base/data/sounds/AllAudio.mk)
+# Get everything else from the parent package
+$(call inherit-product, $(SRC_TARGET_DIR)/product/generic_no_telephony.mk)
 
 ifeq ($(TARGET_PRODUCT),$(filter $(TARGET_PRODUCT),cm_mb525 cm_mb526 cm_milestone2))
 $(call inherit-product, vendor/motorola/jordan-common/jordan-vendor.mk)
@@ -39,6 +48,7 @@ PRODUCT_PROPERTY_OVERRIDES += \
 	ro.bq.gpu_to_cpu_unsupported=1 \
 	dalvik.vm.debug.alloc=0 \
 	ro.hwui.disable_scissor_opt=true \
+	cm.updater.uri=http://defy.cm-for.us/api \
 
 # wifi props
 PRODUCT_PROPERTY_OVERRIDES += \
@@ -57,7 +67,7 @@ PRODUCT_PROPERTY_OVERRIDES += \
 
 PRODUCT_PROPERTY_OVERRIDES += \
 	ro.config.low_ram=false  \
-	dalvik.vm.jit.codecachesize=0 \
+	dalvik.vm.jit.codecachesize=0
 
 DEVICE_PACKAGE_OVERLAYS += device/moto/jordan-common/overlay
 
@@ -81,9 +91,6 @@ PRODUCT_COPY_FILES += \
 PRODUCT_PACKAGES += \
 	com.android.future.usb.accessory
 
-# FIXME in repo 
-PRODUCT_PACKAGES += rild Dialer
-
 # ICS sound
 PRODUCT_PACKAGES += \
 	hcitool hciattach hcidump \
@@ -94,9 +101,6 @@ PRODUCT_PACKAGES += \
 # fixes the app switcher previews
 PRODUCT_PACKAGES += \
     libskia_legacy
-
-# TO FIX for ICS
-PRODUCT_PACKAGES += power.omap3
 
 # OMX stuff
 PRODUCT_PACKAGES += dspexec libbridge libLCML libOMX_Core libstagefrighthw
@@ -111,14 +115,11 @@ PRODUCT_PACKAGES += libfnc DefyParts
 # Core stuff
 PRODUCT_PACKAGES += charge_only_mode mot_boot_mode
 
-# Publish that we support the live wallpaper feature.
-PRODUCT_PACKAGES += librs_jni
-
 # CM9 apps
 PRODUCT_PACKAGES += Torch HwaSettings make_ext4fs
 
 # Experimental TI OpenLink
-PRODUCT_PACKAGES += libnl_2 iw libbt-vendor uim-sysfs
+PRODUCT_PACKAGES += libnl_2 iw libbt-vendor uim-sysfs libbluedroid
 
 # Wifi
 PRODUCT_PACKAGES += \
@@ -128,7 +129,6 @@ PRODUCT_PACKAGES += \
     wpa_supplicant.conf \
     TQS_D_1.7.ini \
     TQS_D_1.7_127x.ini \
-    crda \
     regulatory.bin \
     calibrator 
 
@@ -139,14 +139,7 @@ PRODUCT_PACKAGES += \
 
 PRODUCT_COPY_FILES += \
     $(OUT)/ramdisk.img:system/bootmenu/2nd-boot/ramdisk \
-    $(OUT)/kernel:system/bootmenu/2nd-boot/zImage \
-    $(OUT)/utilities/lsof:system/bootmenu/binary/lsof \
-
-# Blobs and bootmenu stuff
-$(call inherit-product, device/moto/jordan-common/jordan-blobs.mk)
-$(call inherit-product, device/moto/jordan-common/bootmenu/bootmenu.mk)
-$(call inherit-product, build/target/product/full_base.mk)
-$(call inherit-product, frameworks/native/build/phone-hdpi-512-dalvik-heap.mk)
+    $(OUT)/kernel:system/bootmenu/2nd-boot/zImage
 
 # Should be after the full_base include, which loads languages_full
 PRODUCT_LOCALES := en_US pl_PL ru_RU zh_TW de_DE es_ES cs_CZ it_IT vi_VN pt_BR hu_HU fr_FR zh_CN nl_NL fa_IR

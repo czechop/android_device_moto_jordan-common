@@ -49,11 +49,12 @@ TARGET_GLOBAL_CPPFLAGS += -mtune=cortex-a8 -mfpu=neon -mfloat-abi=softfp
 # Conserve memory in the Dalvik heap
 # Details: https://github.com/CyanogenMod/android_dalvik/commit/15726c81059b74bf2352db29a3decfc4ea9c1428
 TARGET_ARCH_LOWMEM := true
+TARGET_ARCH_HAVE_NEON := true
 
 # Wifi related defines
 USES_TI_MAC80211 := true
 COMMON_GLOBAL_CFLAGS += -DUSES_TI_MAC80211
-WPA_SUPPLICANT_VERSION           := VER_0_8_X
+WPA_SUPPLICANT_VERSION           := VER_0_8_X_TI
 BOARD_WPA_SUPPLICANT_DRIVER      := NL80211
 BOARD_WPA_SUPPLICANT_PRIVATE_LIB := lib_driver_cmd_wl12xx
 BOARD_HOSTAPD_DRIVER             := NL80211
@@ -63,12 +64,12 @@ BOARD_WLAN_DEVICE                := wl12xx_mac80211
 BOARD_SOFTAP_DEVICE              := wl12xx_mac80211
 WIFI_DRIVER_MODULE_PATH          := "/system/lib/modules/wl12xx_sdio.ko"
 WIFI_DRIVER_MODULE_NAME          := "wl12xx_sdio"
+BOARD_WIFI_SKIP_CAPABILITIES     := true
 
 # Bluetooth
 BOARD_HAVE_BLUETOOTH := true
-TARGET_CUSTOM_BLUEDROID := ../../../device/moto/jordan-common/bluedroid.c
 BOARD_BLUETOOTH_BDROID_BUILDCFG_INCLUDE_DIR := device/moto/jordan-common/bluetooth
-BOARD_WPAN_DEVICE := true
+BOARD_HAVE_BLUETOOTH_TI := true
 # Usb Specific
 BOARD_VOLD_EMMC_SHARES_DEV_MAJOR := true
 
@@ -92,6 +93,7 @@ BOARD_DATA_DEVICE   := /dev/block/mmcblk1p26
 # Recovery
 BOARD_HAS_NO_SELECT_BUTTON := true
 TARGET_RECOVERY_FSTAB := device/moto/jordan-common/recovery.fstab
+RECOVERY_FSTAB_VERSION := 2
 TARGET_RECOVERY_INITRC := device/moto/jordan-common/profiles/ramdisk/init-recovery.rc
 BOARD_HAS_LARGE_FILESYSTEM := true
 BOARD_HAS_NO_MISC_PARTITION := true
@@ -116,7 +118,6 @@ BOARD_UMS_LUNFILE := /sys/class/android_usb/f_mass_storage/lun/file
 
 # Egl Specific
 USE_OPENGL_RENDERER := true
-BOARD_EGL_CFG := device/moto/jordan-common/egl.cfg
 BOARD_USE_YUV422I_DEFAULT_COLORFORMAT := true
 ENABLE_WEBGL := true
 COMMON_GLOBAL_CFLAGS += -DSYSTEMUI_PBSIZE_HACK=1
@@ -124,6 +125,9 @@ COMMON_GLOBAL_CFLAGS += -DWORKAROUND_BUG_10194508=1
 COMMON_GLOBAL_CFLAGS += -DHAS_CONTEXT_PRIORITY -DDONT_USE_FENCE_SYNC
 TARGET_DISABLE_TRIPLE_BUFFERING := true
 TARGET_RUNNING_WITHOUT_SYNC_FRAMEWORK := true
+# Increase EGL cache size to 2MB
+MAX_EGL_CACHE_SIZE := 2097152
+MAX_EGL_CACHE_KEY_SIZE := 4096
 
 # Camera
 USE_CAMERA_STUB := false
@@ -134,26 +138,24 @@ BOARD_USES_AUDIO_LEGACY := true
 TARGET_PROVIDES_LIBAUDIO := true
 BOARD_USE_KINETO_COMPATIBILITY := true
 TARGET_BOOTANIMATION_USE_RGB565 := true
+TARGET_BOOTANIMATION_PRELOAD := true
 BOARD_USE_HARDCODED_FAST_TRACK_LATENCY_WHEN_DENIED := 160
 BOARD_USES_LEGACY_RIL :=true
 BOARD_USE_LEGACY_SENSORS_FUSION := false
 BOARD_HARDWARE_CLASS := device/moto/jordan-common/cmhw/
 
+# Override healthd HAL to use charge_counter for 1%
+BOARD_HAL_STATIC_LIBRARIES := libhealthd.omap3
+
 # Release tool
 TARGET_PROVIDES_RELEASETOOLS := true
-TARGET_RELEASETOOL_OTA_FROM_TARGET_SCRIPT := device/moto/jordan-common/releasetools/common_ota_from_target_files
-
-# adb root
-ADDITIONAL_DEFAULT_PROPERTIES += ro.adb.secure=0
-ADDITIONAL_DEFAULT_PROPERTIES += ro.secure=0
-ADDITIONAL_DEFAULT_PROPERTIES += ro.allow.mock.location=1
+TARGET_RELEASETOOL_OTA_FROM_TARGET_SCRIPT := build/tools/releasetools/ota_from_target_files --device_specific device/moto/jordan-common/releasetools/jordan-common_ota_from_target_files.py
+TARGET_SYSTEMIMAGE_USE_SQUISHER := true
 
 ext_modules:
 	make -C $(TARGET_KERNEL_MODULES_EXT) modules KERNEL_DIR=$(KERNEL_OUT) ARCH=arm CROSS_COMPILE="arm-eabi-"
 	find $(TARGET_KERNEL_MODULES_EXT)/ -name "*.ko" -exec mv {} \
 		$(KERNEL_MODULES_OUT) \; || true
-
-
 
 WLAN_MODULES:
 	make clean -C hardware/ti/wlan/mac80211/compat_wl12xx
@@ -174,7 +176,7 @@ hboot:
 # If kernel sources are present in repo, here is the location
 TARGET_KERNEL_SOURCE := $(ANDROID_BUILD_TOP)/jordan-kernel
 TARGET_KERNEL_CUSTOM_TOOLCHAIN := arm-eabi-4.4.3
-BOARD_KERNEL_CMDLINE := console=/dev/null mem=500M init=/init omapfb.vram=0:4M
+BOARD_KERNEL_CMDLINE := console=/dev/null mem=500M init=/init omapfb.vram=0:4M usbcore.old_scheme_first=Y
 #TARGET_PREBUILT_KERNEL := $(ANDROID_BUILD_TOP)/device/moto/jordan-common/kernel
 # Extra : external modules sources
 TARGET_KERNEL_MODULES_EXT := $(ANDROID_BUILD_TOP)/device/moto/jordan-common/modules/sources/
