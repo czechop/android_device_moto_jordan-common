@@ -42,7 +42,6 @@ PRODUCT_PROPERTY_OVERRIDES += \
 	net.dns2=8.8.4.4 \
 	ro.opengles.version = 131072 \
 	persist.sys.usb.config=mass_storage,adb \
-	ro.product.use_charge_counter=1 \
 	hwui.use.blacklist=true \
 	ro.sf.lcd_density=240 \
 	ro.bq.gpu_to_cpu_unsupported=1 \
@@ -97,12 +96,7 @@ PRODUCT_PACKAGES += \
 	libaudioutils audio.a2dp.default  \
 	libaudiohw_legacy \
 
-# legacy version of skia
-# fixes the app switcher previews
-PRODUCT_PACKAGES += \
-    libskia_legacy
-
-# OMX stuff
+#	 OMX stuff
 PRODUCT_PACKAGES += dspexec libbridge libLCML libOMX_Core libstagefrighthw
 PRODUCT_PACKAGES += libOMX.TI.AAC.encode libOMX.TI.AAC.decode libOMX.TI.AMR.decode libOMX.TI.AMR.encode
 PRODUCT_PACKAGES += libOMX.TI.WBAMR.encode libOMX.TI.MP3.decode libOMX.TI.WBAMR.decode
@@ -127,15 +121,9 @@ PRODUCT_PACKAGES += \
     dhcpcd.conf \
     hostapd.conf \
     wpa_supplicant.conf \
-    TQS_D_1.7.ini \
-    TQS_D_1.7_127x.ini \
     regulatory.bin \
-    calibrator 
-
-# Wifi Direct and WPAN
-PRODUCT_PACKAGES += \
+    calibrator \
     ti_wfd_libs \
-    ti-wpan-fw
 
 PRODUCT_COPY_FILES += \
     $(OUT)/ramdisk.img:system/bootmenu/2nd-boot/ramdisk \
