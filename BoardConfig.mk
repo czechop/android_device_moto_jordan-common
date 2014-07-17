@@ -56,7 +56,7 @@ TARGET_USE_KERNEL_BACKPORTS      := false
 # Wifi related defines
 USES_TI_MAC80211 := true
 COMMON_GLOBAL_CFLAGS += -DUSES_TI_MAC80211
-WPA_SUPPLICANT_VERSION           := VER_0_8_X_TI
+WPA_SUPPLICANT_VERSION           := VER_0_8_X
 BOARD_WPA_SUPPLICANT_DRIVER      := NL80211
 BOARD_WPA_SUPPLICANT_PRIVATE_LIB := lib_driver_cmd_wl12xx
 BOARD_HOSTAPD_DRIVER             := NL80211
@@ -91,6 +91,7 @@ TARGET_USE_OMAP_COMPAT  := true
 BUILD_WITH_TI_AUDIO := 1
 BUILD_PV_VIDEO_ENCODERS := 1
 
+<<<<<<< HEAD
 # Bootmenu
 BOARD_USES_BOOTMENU := true
 BOARD_WITH_CPCAP    := true
@@ -101,11 +102,11 @@ BOARD_SDEXT_DEVICE  := /dev/block/mmcblk0p2
 BOARD_SYSTEM_DEVICE := /dev/block/mmcblk1p21
 BOARD_DATA_DEVICE   := /dev/block/mmcblk1p26
 
-# Recovery
+# TWRP Recovery
 BOARD_HAS_NO_SELECT_BUTTON := true
 TARGET_RECOVERY_FSTAB := device/moto/jordan-common/recovery.fstab
 RECOVERY_FSTAB_VERSION := 2
-TARGET_RECOVERY_INITRC := device/moto/jordan-common/profiles/ramdisk/init-recovery.rc
+TARGET_RECOVERY_INITRC := device/moto/jordan-common/ramdisk/init-recovery.rc
 BOARD_HAS_LARGE_FILESYSTEM := true
 BOARD_HAS_NO_MISC_PARTITION := true
 BOARD_USES_MMCUTILS := true
@@ -119,17 +120,19 @@ TW_FLASH_FROM_STORAGE := true
 BOARD_USE_CUSTOM_RECOVERY_FONT:= \"roboto_10x18.h\"
 TW_BRIGHTNESS_PATH := /sys/class/leds/lcd-backlight/brightness
 TW_MAX_BRIGHTNESS := 255
-TW_NO_BATT_PERCENT := true
+TW_NO_BATT_PERCENT := false
 TW_NO_REBOOT_RECOVERY := true
 TW_NO_REBOOT_BOOTLOADER := true
 TW_ALWAYS_RMRF := true
-TARGET_RECOVERY_PRE_COMMAND := "/system/bootmenu/script/reboot_command.sh"
-TARGET_RECOVERY_PRE_COMMAND_CLEAR_REASON := true
 BOARD_UMS_LUNFILE := /sys/class/android_usb/f_mass_storage/lun/file
 TW_NO_SCREEN_BLANK := true
-TW_HAS_NO_RECOVERY_PARTITION :=true
-TW_HAS_NO_BOOT_PARTITION :=true
-TW_NO_SCREEN_TIMEOUT :=true
+TW_HAS_NO_RECOVERY_PARTITION := true
+TW_HAS_NO_BOOT_PARTITION := true
+TW_NO_SCREEN_TIMEOUT := true
+
+TARGET_RECOVERY_PRE_COMMAND :=  "echo recovery > /cache/recovery/bootmode.conf; sync; \#"
+TARGET_RECOVERY_PRE_COMMAND_CLEAR_REASON := true
+TARGET_NO_SEPARATE_RECOVERY := true
 
 # Egl Specific
 USE_OPENGL_RENDERER := true
@@ -141,22 +144,26 @@ COMMON_GLOBAL_CFLAGS += -DHAS_CONTEXT_PRIORITY -DDONT_USE_FENCE_SYNC
 TARGET_DISABLE_TRIPLE_BUFFERING := true
 TARGET_RUNNING_WITHOUT_SYNC_FRAMEWORK := true
 # Increase EGL cache size to 2MB
-MAX_EGL_CACHE_SIZE := 2097152
-MAX_EGL_CACHE_KEY_SIZE := 4096
+#MAX_EGL_CACHE_SIZE := 2097152
+#MAX_EGL_CACHE_KEY_SIZE := 4096
 
 # Camera
 USE_CAMERA_STUB := false
 BOARD_OVERLAY_BASED_CAMERA_HAL := true
 
+# Boot animation
+TARGET_BOOTANIMATION_PRELOAD := true
+TARGET_BOOTANIMATION_TEXTURE_CACHE := true
+TARGET_BOOTANIMATION_USE_RGB565 := true
+TARGET_BOOTANIMATION_HALF_RES := true
+TARGET_CONTINUOUS_SPLASH_ENABLED := false
+
 # Other..
 BOARD_USES_AUDIO_LEGACY := true
 TARGET_PROVIDES_LIBAUDIO := true
 BOARD_USE_KINETO_COMPATIBILITY := true
-TARGET_BOOTANIMATION_USE_RGB565 := true
-TARGET_BOOTANIMATION_PRELOAD := true
-TARGET_BOOTANIMATION_HALF_RES := true
 BOARD_USE_HARDCODED_FAST_TRACK_LATENCY_WHEN_DENIED := 160
-BOARD_USES_LEGACY_RIL :=true
+BOARD_USES_LEGACY_RIL := true
 BOARD_USE_LEGACY_SENSORS_FUSION := false
 BOARD_HARDWARE_CLASS := device/moto/jordan-common/cmhw/
 
@@ -169,14 +176,14 @@ TARGET_RELEASETOOL_OTA_FROM_TARGET_SCRIPT := build/tools/releasetools/ota_from_t
 TARGET_SYSTEMIMAGE_USE_SQUISHER := true
 
 ext_modules:
-	make -C $(TARGET_KERNEL_MODULES_EXT) modules KERNEL_DIR=$(KERNEL_OUT) ARCH=arm CROSS_COMPILE="arm-eabi-"
+	make -C $(TARGET_KERNEL_MODULES_EXT) modules KERNEL_DIR=$(KERNEL_OUT) ARCH=arm CROSS_COMPILE=$(TARGET_KERNEL_MODULES_TOOLCHAIN)
 	find $(TARGET_KERNEL_MODULES_EXT)/ -name "*.ko" -exec mv {} \
 		$(KERNEL_MODULES_OUT) \; || true
 
 COMPAT_MODULES:
 	make mrproper -C device/moto/jordan-common/modules/backports
-	make -C device/moto/jordan-common/modules/backports KERNEL_DIR=$(KERNEL_OUT) KLIB=$(KERNEL_OUT) KLIB_BUILD=$(KERNEL_OUT) ARCH=arm CROSS_COMPILE="arm-eabi-" defconfig-mapphone
-	make -C device/moto/jordan-common/modules/backports KERNEL_DIR=$(KERNEL_OUT) KLIB=$(KERNEL_OUT) KLIB_BUILD=$(KERNEL_OUT) ARCH=arm CROSS_COMPILE="arm-eabi-"
+	make -C device/moto/jordan-common/modules/backports KERNEL_DIR=$(KERNEL_OUT) KLIB=$(KERNEL_OUT) KLIB_BUILD=$(KERNEL_OUT) ARCH=arm CROSS_COMPILE=$(TARGET_KERNEL_MODULES_TOOLCHAIN) defconfig-mapphone
+	make -C device/moto/jordan-common/modules/backports KERNEL_DIR=$(KERNEL_OUT) KLIB=$(KERNEL_OUT) KLIB_BUILD=$(KERNEL_OUT) ARCH=arm CROSS_COMPILE=$(TARGET_KERNEL_MODULES_TOOLCHAIN)
 	mv device/moto/jordan-common/modules/backports/compat/compat.ko $(KERNEL_MODULES_OUT)
 ifeq ($(TARGET_USE_BLUEDROID_STACK),false)
 	mv device/moto/jordan-common/modules/backports/net/bluetooth/bluetooth.ko $(KERNEL_MODULES_OUT)
@@ -194,7 +201,7 @@ endif
 
 WLAN_MODULES:
 	make clean -C hardware/ti/wlan/mac80211/compat_wl12xx
-	make -C hardware/ti/wlan/mac80211/compat_wl12xx KERNEL_DIR=$(KERNEL_OUT) KLIB=$(KERNEL_OUT) KLIB_BUILD=$(KERNEL_OUT) ARCH=arm CROSS_COMPILE="arm-eabi-"
+	make -C hardware/ti/wlan/mac80211/compat_wl12xx KERNEL_DIR=$(KERNEL_OUT) KLIB=$(KERNEL_OUT) KLIB_BUILD=$(KERNEL_OUT) ARCH=arm CROSS_COMPILE=$(TARGET_KERNEL_MODULES_TOOLCHAIN)
 	mv hardware/ti/wlan/mac80211/compat_wl12xx/compat/compat.ko $(KERNEL_MODULES_OUT)
 	mv hardware/ti/wlan/mac80211/compat_wl12xx/net/mac80211/mac80211.ko $(KERNEL_MODULES_OUT)
 	mv hardware/ti/wlan/mac80211/compat_wl12xx/net/wireless/cfg80211.ko $(KERNEL_MODULES_OUT)
@@ -203,18 +210,20 @@ WLAN_MODULES:
 	arm-linux-androideabi-strip --strip-unneeded $(KERNEL_MODULES_OUT)/*
 
 hboot:
-	mkdir -p $(PRODUCT_OUT)/system/bootmenu/2nd-boot   
-	echo "$(BOARD_KERNEL_CMDLINE)" > $(PRODUCT_OUT)/system/bootmenu/2nd-boot/cmdline  
-	make -C  $(ANDROID_BUILD_TOP)/device/moto/jordan-common/hboot ARCH=arm CROSS_COMPILE="arm-eabi-"
-	mv $(ANDROID_BUILD_TOP)/device/moto/jordan-common/hboot/hboot.bin $(PRODUCT_OUT)/system/bootmenu/2nd-boot/
-	make clean -C $(ANDROID_BUILD_TOP)/device/moto/jordan-common/hboot
+	mkdir -p $(PRODUCT_OUT)/system/bootstrap/2nd-boot   
+	echo "$(BOARD_KERNEL_CMDLINE)" > $(PRODUCT_OUT)/system//bootstrap/2nd-boot/cmdline  
+	echo "$(BOARD_RECOVERY_KERNEL_CMDLINE)" > $(PRODUCT_OUT)/system/bootstrap/2nd-boot/cmdline-recovery
+	make -C  $(ANDROID_BUILD_TOP)/device/moto/jordan-common/bootstrap/hboot ARCH=arm CROSS_COMPILE=$(TARGET_KERNEL_MODULES_TOOLCHAIN)
+	mv $(ANDROID_BUILD_TOP)/device/moto/jordan-common/bootstrap/hboot/hboot.bin $(PRODUCT_OUT)/system/bootstrap/2nd-boot/
+	make clean -C $(ANDROID_BUILD_TOP)/device/moto/jordan-common/bootstrap/hboot
 
 # If kernel sources are present in repo, here is the location
 TARGET_KERNEL_SOURCE := $(ANDROID_BUILD_TOP)/jordan-kernel
 TARGET_KERNEL_CUSTOM_TOOLCHAIN := arm-eabi-4.4.3
-BOARD_KERNEL_CMDLINE := console=/dev/null mem=500M init=/init omapfb.vram=0:4M usbcore.old_scheme_first=Y
-#TARGET_PREBUILT_KERNEL := $(ANDROID_BUILD_TOP)/device/moto/jordan-common/kernel
-# Extra : external modules sources
+TARGET_KERNEL_MODULES_TOOLCHAIN := $(ANDROID_BUILD_TOP)/prebuilt/linux-x86/toolchain/$(TARGET_KERNEL_CUSTOM_TOOLCHAIN)/bin/arm-eabi-
+BOARD_RECOVERY_KERNEL_CMDLINE := console=/dev/null mem=500M init=/init omapfb.vram=0:4M usbcore.old_scheme_first=y
+BOARD_KERNEL_CMDLINE := $(BOARD_RECOVERY_KERNEL_CMDLINE) panic=30 mmcparts=mmcblk1:p20(kpanic) cpcap_charger_enabled=n
+# Extra: external modules sources
 TARGET_KERNEL_MODULES_EXT := $(ANDROID_BUILD_TOP)/device/moto/jordan-common/modules/sources/
 
 ifeq ($(TARGET_USE_KERNEL_BACKPORTS),true)

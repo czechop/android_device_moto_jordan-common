@@ -503,12 +503,14 @@ JordanCameraWrapper::getParameters() const
     ret.set(CameraParameters::KEY_SUPPORTED_PREVIEW_FPS_RANGE,
             "(10000,30000),(10000,25000),(10000,20000),(10000,24000),(10000,15000),(10000,10000)");
     ret.set(CameraParameters::KEY_PREVIEW_FPS_RANGE, "10000, 30000");
-    if (!deviceIsKobe) {
-    	ret.set(CameraParameters::KEY_SUPPORTED_PREVIEW_SIZES, "176x144,320x240,352x288,640x480,848x480,1280x720");
-    } else {
+	
+    if (deviceIsKobe) {
         ret.set(CameraParameters::KEY_SUPPORTED_PICTURE_SIZES, "320x240,640x480,1280x960,1600x1200,2048x1536");
+    } else if (mCameraType == CAM_SOC) {
+    	ret.set(CameraParameters::KEY_SUPPORTED_PREVIEW_SIZES, "176x144,320x240,352x288,640x480,848x480");
+    } else {
+    	ret.set(CameraParameters::KEY_SUPPORTED_PREVIEW_SIZES, "176x144,320x240,352x288,640x480,848x480,1280x720");
     }
-
     ret.set(CameraParameters::KEY_SUPPORTED_VIDEO_SIZES, "");
 
     ret.set("cam-mode", mVideoMode ? "1" : "0");
