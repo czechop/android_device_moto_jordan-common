@@ -91,7 +91,6 @@ TARGET_USE_OMAP_COMPAT  := true
 BUILD_WITH_TI_AUDIO := 1
 BUILD_PV_VIDEO_ENCODERS := 1
 
-<<<<<<< HEAD
 # Bootmenu
 BOARD_USES_BOOTMENU := true
 BOARD_WITH_CPCAP    := true
@@ -210,12 +209,12 @@ WLAN_MODULES:
 	arm-linux-androideabi-strip --strip-unneeded $(KERNEL_MODULES_OUT)/*
 
 hboot:
-	mkdir -p $(PRODUCT_OUT)/system/bootstrap/2nd-boot   
-	echo "$(BOARD_KERNEL_CMDLINE)" > $(PRODUCT_OUT)/system//bootstrap/2nd-boot/cmdline  
-	echo "$(BOARD_RECOVERY_KERNEL_CMDLINE)" > $(PRODUCT_OUT)/system/bootstrap/2nd-boot/cmdline-recovery
-	make -C  $(ANDROID_BUILD_TOP)/device/moto/jordan-common/bootstrap/hboot ARCH=arm CROSS_COMPILE=$(TARGET_KERNEL_MODULES_TOOLCHAIN)
-	mv $(ANDROID_BUILD_TOP)/device/moto/jordan-common/bootstrap/hboot/hboot.bin $(PRODUCT_OUT)/system/bootstrap/2nd-boot/
-	make clean -C $(ANDROID_BUILD_TOP)/device/moto/jordan-common/bootstrap/hboot
+	mkdir -p $(PRODUCT_OUT)/system/bootmenu/2nd-boot   
+	echo "$(BOARD_KERNEL_CMDLINE)" > $(PRODUCT_OUT)/system/bootmenu/2nd-boot/cmdline  
+	echo "$(BOARD_RECOVERY_KERNEL_CMDLINE)" > $(PRODUCT_OUT)/system/bootmenu/2nd-boot/cmdline-recovery
+	make -C  $(ANDROID_BUILD_TOP)/device/moto/jordan-common/bootmenu/hboot ARCH=arm CROSS_COMPILE=$(TARGET_KERNEL_MODULES_TOOLCHAIN)
+	mv $(ANDROID_BUILD_TOP)/device/moto/jordan-common/bootmenu/hboot/hboot.bin $(PRODUCT_OUT)/system/bootmenu/2nd-boot/
+	make clean -C $(ANDROID_BUILD_TOP)/device/moto/jordan-common/bootmenu/hboot
 
 # If kernel sources are present in repo, here is the location
 TARGET_KERNEL_SOURCE := $(ANDROID_BUILD_TOP)/jordan-kernel

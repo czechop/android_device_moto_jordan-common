@@ -1,8 +1,8 @@
 def InstallEnd_SetSpecificDeviceConfigs(self, *args, **kwargs):
   # Fix Scripts permissions
-  self.script.SetPermissionsRecursive("/system/bootstrap/config", 0, 0, 0755, 0664, None, None)
-  self.script.SetPermissionsRecursive("/system/bootstrap/binary", 0, 0, 0755, 0755, None, None)
-  self.script.SetPermissionsRecursive("/system/bootstrap/script", 0, 0, 0755, 0755, None, None)
+  self.script.SetPermissionsRecursive("/system/bootmenu/config", 0, 0, 0755, 0664, None, None)
+  self.script.SetPermissionsRecursive("/system/bootmenu/binary", 0, 0, 0755, 0755, None, None)
+  self.script.SetPermissionsRecursive("/system/bootmenu/script", 0, 0, 0755, 0755, None, None)
   # Install correct Media-Profiles
 #  self.script.AppendExtra('package_extract_file("system/bin/camera_detect", "/tmp/camera_detect");')
 #  self.script.AppendExtra('set_perm(0, 0, 0777, "/tmp/camera_detect");')
@@ -34,8 +34,15 @@ def FullOTA_InstallEnd(self, *args, **kwargs):
   self.script.SetPermissionsRecursive("/system/etc/init.d", 0, 0, 0755, 0555, None, None)
   self.script.SetPermissionsRecursive("/system/addon.d", 0, 0, 0755, 0755, None, None)
   self.script.SetPermissions("/system/etc/motorola/comm_drv/commdrv_fs.sh", 0, 0, 0755, None, None)
+  self.script.UnpackPackageDir("system/bin/bootmenu", "/system/bootmenu/binary/bootmenu")
 
   symlinks = []
+  symlinks.append(("indeterminate.png", "/system/bootmenu/images/indeterminate1.png"))
+  symlinks.append(("indeterminate.png", "/system/bootmenu/images/indeterminate2.png"))
+  symlinks.append(("indeterminate.png", "/system/bootmenu/images/indeterminate3.png"))
+  symlinks.append(("indeterminate.png", "/system/bootmenu/images/indeterminate4.png"))
+  symlinks.append(("indeterminate.png", "/system/bootmenu/images/indeterminate5.png"))
+  symlinks.append(("indeterminate.png", "/system/bootmenu/images/indeterminate6.png"))
 
   # libaudio link fix
   symlinks.append(("/system/lib/hw/audio.a2dp.default.so", "/system/lib/liba2dp.so"))

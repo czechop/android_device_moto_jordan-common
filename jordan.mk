@@ -22,7 +22,7 @@ TARGET_SCREEN_HEIGHT := 854
 TARGET_SCREEN_WIDTH := 480
 
 # Inherit from those products. Most specific first.
-$(call inherit-product, device/moto/jordan-common/bootstrap/bootstrap.mk)
+$(call inherit-product, device/moto/jordan-common/bootmenu/bootmenu.mk)
 $(call inherit-product, device/common/gps/gps_eu_supl.mk)
 $(call inherit-product, $(SRC_TARGET_DIR)/product/full_base_telephony.mk)
 $(call inherit-product, device/moto/jordan-common/jordan-blobs.mk)
