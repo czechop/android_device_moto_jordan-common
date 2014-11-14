@@ -30,20 +30,6 @@ $(call inherit-product, frameworks/native/build/phone-hdpi-512-dalvik-heap.mk)
 
 DEVICE_PACKAGE_OVERLAYS += device/moto/jordan-common/overlay
 
-#HWUI Tweaks
-PRODUCT_PROPERTY_OVERRIDES += \
-	ro.hwui.disable_scissor_opt=true \
-	ro.hwui.texture_cache_size=4 \
-	ro.hwui.fbo_cache_size=4 \
-	ro.hwui.text_small_cache_width=256 \
-	ro.hwui.text_small_cache_height=64 \
-	ro.hwui.text_large_cache_width=512 \
-	ro.hwui.text_large_cache_height=150 \
-	ro.hwui.drop_shadow_cache_size=0.5 \
-	ro.hwui.r_buffer_cache_size=1 \
-	ro.hwui.text_gamma_correction=shader \
-	hwui.use_gpu_pixel_buffers=false
-
 PRODUCT_PROPERTY_OVERRIDES += \
 	ro.com.google.locationfeatures=1 \
 	ro.media.dec.jpeg.memcap=20000000 \
@@ -52,7 +38,6 @@ PRODUCT_PROPERTY_OVERRIDES += \
 	ro.opengles.version=131072 \
 	hwui.use.blacklist=true \
 	ro.sf.lcd_density=240 \
-	ro.bq.gpu_to_cpu_unsupported=1 \
 	dalvik.vm.debug.alloc=0 \
 	cm.updater.uri=http://defy.cm-for.us/api \
 	ro.setupwizard.enable_bypass=1 \
@@ -60,11 +45,8 @@ PRODUCT_PROPERTY_OVERRIDES += \
 	ro.config.low_ram=true  \
 	dalvik.vm.jit.codecachesize=0 \
 	ro.input.noresample=1 \
-	debug.sf.fb_always_on=1 \
-	debug.egl.hw=1 \
-	debug.sf.hw=1 \
-	debug.sf.no_hw_vsync=1 \
-	persist.sys.force_highendgfx=true
+	persist.sys.force_highendgfx=true \
+	persist.call_recording.enabled=1
 
 # Set default USB interface
 PRODUCT_DEFAULT_PROPERTY_OVERRIDES += \
@@ -81,7 +63,7 @@ PRODUCT_PROPERTY_OVERRIDES += \
 	ro.telephony.ril.v3=signalstrength \
 	ro.telephony.ril_class=MotoWrigley3GRIL \
 	ro.telephony.call_ring.multiple=false \
-	ro.telephony.call_ring.delay=500 \
+	ro.telephony.call_ring.delay=50 \
 	ro.telephony.default_network=3 \
 	mobiledata.interfaces=rmnet0 \
 
@@ -109,7 +91,7 @@ PRODUCT_PACKAGES += \
 
 # Legacy Sound
 PRODUCT_PACKAGES += \
-	libaudioutils audio.a2dp.default  \
+	libaudioutils audio.a2dp.default audio.r_submix.default  \
 	libaudiohw_legacy \
 
 # OMX stuff

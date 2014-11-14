@@ -132,6 +132,8 @@ TW_NO_SCREEN_TIMEOUT := true
 TARGET_RECOVERY_PRE_COMMAND :=  "echo recovery > /cache/recovery/bootmode.conf; sync; \#"
 TARGET_RECOVERY_PRE_COMMAND_CLEAR_REASON := true
 TARGET_NO_SEPARATE_RECOVERY := true
+TW_EXCLUDE_SUPERSU := true
+TW_EXCLUDE_ENCRYPTED_BACKUPS := true
 
 # Egl Specific
 USE_OPENGL_RENDERER := true
@@ -172,6 +174,7 @@ BOARD_HAL_STATIC_LIBRARIES := libhealthd.omap3
 # Release tool
 TARGET_PROVIDES_RELEASETOOLS := true
 TARGET_RELEASETOOL_OTA_FROM_TARGET_SCRIPT := build/tools/releasetools/ota_from_target_files --device_specific device/moto/jordan-common/releasetools/jordan-common_ota_from_target_files.py
+TARGET_INCREMENTAL_OTA_VERBATIM_FILES := system/app/Provision.apk
 TARGET_SYSTEMIMAGE_USE_SQUISHER := true
 
 ext_modules:
