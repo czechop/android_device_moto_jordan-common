@@ -75,7 +75,7 @@ PRODUCT_COPY_FILES += \
 	${bm_device}/bootmenu/2nd-boot/hboot_recovery.cfg:system/bootmenu/2nd-boot/hboot_recovery.cfg \
 	$(bm_device)/bootmenu/binary/busybox:system/bootmenu/binary/busybox \
 	$(bm_device)/twrp.fstab:recovery/root/etc/twrp.fstab \
-	$(OUT)/ramdisk-recovery.img:system/bootmenu/2nd-boot/ramdisk-recovery \
+	${bm_device}/bootmenu/2nd-boot/ramdisk-recovery:system/bootmenu/2nd-boot/ramdisk-recovery \
 	$(OUT)/ramdisk.img:system/bootmenu/2nd-boot/ramdisk \
 	$(OUT)/kernel:system/bootmenu/2nd-boot/zImage \
 #	${bm_device}/bootmenu/2nd-boot/zImage-recovery:system/bootmenu/2nd-boot/zImage-recovery \
